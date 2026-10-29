@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 from xml.dom import ValidationErr
 
+import click
 from natsort import natsorted
 from PIL import Image, ImageChops, ImageDraw, ImageFont, ImageOps
 from pydantic import BaseModel, model_validator
@@ -1120,6 +1121,11 @@ def generate_pdf(
             print(f'No back image provided in back image directory \"{back_dir_path}\".')
 
     front_image_filenames = get_image_file_paths(front_dir_path)
+
+    if not front_image_filenames:
+        click.launch(front_dir_path)
+        raise Exception(f'No valid front images found in directory "{front_dir_path}". Make sure there are files in the directory with the supported image extensions.')
+
     ds_image_filenames = get_image_file_paths(ds_dir_path)
 
     # Check if double-sided back images has matching front images
